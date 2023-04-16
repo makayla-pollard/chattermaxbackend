@@ -22,7 +22,7 @@ input UserInput{
 
 type RootQuery{
     users: [User!]!
-    userByUsername(username: String!)
+    userByUsername(username: String!): User!
     login(username: String!, password: String!): LoginData!
 }
 

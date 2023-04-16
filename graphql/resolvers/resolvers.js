@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
+require('dotenv').config();
 
 module.exports = {
     users: async () => {
@@ -58,7 +59,7 @@ module.exports = {
         if(!isPassword){
             throw new Error('Password not correct');
         }
-        const token = jwt.sign({userId: gottenUser.id, username: gottenUser.username}, 'secretkey',{
+        const token = jwt.sign({userId: gottenUser.id, username: gottenUser.username}, `${process.env.SECRET_KEY}`,{
             expiresIn: '1h'
         });
 
@@ -88,4 +89,15 @@ module.exports = {
             throw err;
         }
     },
+    /* 
+    addChat: async (args, req) => {
+        if(!req.isAuth){
+            throw new Error('Unauthenticated!)
+        }
+        //other data
+    }
+    
+    
+    
+    */
 }
