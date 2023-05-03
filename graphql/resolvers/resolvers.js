@@ -33,6 +33,10 @@ module.exports = {
                 throw new Error("Email not valid");
             }
 
+            if(args.userInput.password != args.userInput.passConf){
+                throw new Error("Passwords do not match")
+            }
+
             if(args.userInput.password == null || args.userInput.password == "" || args.userInput.username == null || args.userInput.username == ''){
                 throw new Error("Invalid Input")
             }
@@ -93,9 +97,31 @@ module.exports = {
             throw err;
         }
     },
-    editUser: async ({username, newUsername, email, password, picture}) => {
+    editUser: async ({username, newUsername, email, password, passConf, picture}) => {
         try{
-            const result = await User.findOneAndUpdate({username: username},{username: newUsername, email: email, password: password, picture: picture})
+            const existingUser =  await User.findOne({email: email})
+                if(existingUser){
+                    throw new Error("Email exists already.")
+                }
+
+            const userTwo = await User.findOne({username: newUsername})
+                if(userTwo){
+                    throw new Error("Username exists already.")
+                }
+            
+            if( /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false){
+                throw new Error("Email not valid");
+            }
+
+            if(args.userInput.password == null || args.userInput.password == "" || args.userInput.username == null || args.userInput.username == ''){
+                throw new Error("Invalid Input")
+            }
+
+            if(passConf != password){
+                throw new Error("Passwords Do Not Match")
+            }
+            const hashedPassword = await bcrypt.hash(password, 12)
+            const result = await User.findOneAndUpdate({username: username},{username: newUsername, email: email, password: hashedPassword, picture: picture})
             return{
                 ...result._doc,
                 _id: result.id
