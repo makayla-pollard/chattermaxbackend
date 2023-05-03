@@ -43,7 +43,7 @@ module.exports = {
                 username: args.userInput.username,
                 email: args.userInput.email,
                 password: hashedPassword,
-                picture: "default.jpg"
+                picture: "https://i.pinimg.com/222x/57/70/f0/5770f01a32c3c53e90ecda61483ccb08.jpg"
             });
             const result = await finalUser.save();
             
