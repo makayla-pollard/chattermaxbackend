@@ -6,7 +6,7 @@ type User {
     username: String!
     email: String!
     password: String
-    profile: String!
+    picture: String
 }
 
 type LoginData{
@@ -15,10 +15,6 @@ type LoginData{
     tkExp: Int!
 }
 
-input ProfilePictureInput{
-    username: String!
-    pictureName: String!
-}
 
 input UserInput{
     username: String!
