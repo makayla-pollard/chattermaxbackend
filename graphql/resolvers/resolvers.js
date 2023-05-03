@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
 require('dotenv').config();
 
+
 module.exports = {
     users: async () => {
         try{
@@ -32,14 +33,17 @@ module.exports = {
                 throw new Error("Email not valid");
             }
 
+            if(args.userInput.password == null || args.userInput.password == "" || args.userInput.username == null || args.userInput.username == ''){
+                throw new Error("Invalid Input")
+            }
+
             const hashedPassword = await bcrypt.hash(args.userInput.password, 12)
             
             const finalUser = new User({
                 username: args.userInput.username,
                 email: args.userInput.email,
                 password: hashedPassword,
-                firstName: args.userInput.firstName,
-                lastName: args.userInput.lastName
+                pictue: " "
             });
             const result = await finalUser.save();
             
@@ -89,6 +93,17 @@ module.exports = {
             throw err;
         }
     },
+    editUser: async ({username, newUsername, email, password, picture}) => {
+        try{
+            const result = await User.findOneAndUpdate({username: username},{username: newUsername, email: email, password: password, picture: picture})
+            return{
+                ...result._doc,
+                _id: result.id
+            }
+        }catch(err){
+            throw err;
+        }
+    }
     /* 
     addChat: async (args, req) => {
         if(!req.isAuth){

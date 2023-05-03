@@ -6,12 +6,18 @@ type User {
     username: String!
     email: String!
     password: String
+    profile: String!
 }
 
 type LoginData{
     userId: ID!
     token: String!
     tkExp: Int!
+}
+
+input ProfilePictureInput{
+    username: String!
+    pictureName: String!
 }
 
 input UserInput{
@@ -28,6 +34,7 @@ type RootQuery{
 
 type RootMutation{
     createUser(userInput: UserInput): User
+    editUser(username: String!, newUsername: String!, email: String!, password: String!, picture: String!): User
     deleteUser(username: String!): Boolean
 }
 
