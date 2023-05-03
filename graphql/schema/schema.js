@@ -20,6 +20,7 @@ input UserInput{
     username: String!
     email: String!
     password:String!
+    picture: String
 }
 
 type RootQuery{
