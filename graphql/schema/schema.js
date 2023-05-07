@@ -32,7 +32,7 @@ type RootQuery{
 
 type RootMutation{
     createUser(userInput: UserInput): User
-    editUser(username: String!, newUsername: String!, email: String!, password: String!,passConf: String!, picture: String!): User
+    editUser(username: String!, newUsername: String!, email: String!, oldPassword: String!, password: String!,passConf: String!, picture: String!): User
     deleteUser(username: String!): Boolean
 }
 

@@ -97,17 +97,14 @@ module.exports = {
             throw err;
         }
     },
-    editUser: async ({username, newUsername, email, password, passConf, picture}) => {
+    editUser: async ({username, newUsername, email, oldPassword, password, passConf, picture}) => {
         try{
-            const existingUser =  await User.findOne({email: email})
-                if(existingUser){
-                    throw new Error("Email exists already.")
-                }
-
+            const gottenuser = await User.findOne({username: username});
             const userTwo = await User.findOne({username: newUsername})
-                if(userTwo){
-                    throw new Error("Username exists already.")
-                }
+            
+            if(userTwo != gottenuser && userTwo != null){
+                throw new Error("Username already exists")
+            }
             
             if( /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false){
                 throw new Error("Email not valid");
@@ -120,7 +117,14 @@ module.exports = {
             if(passConf != password){
                 throw new Error("Passwords Do Not Match")
             }
-            const hashedPassword = await bcrypt.hash(password, 12)
+            const isPassword = await bcrypt.compare(password, oldPassword);
+            const hashedPassword = "";
+            if(isPassword){
+                hashedPassword = oldPassword
+            }else if(!isPassword){
+                hashedPassword = await bcrypt.hash(password, 12)
+            }
+            
             const result = await User.findOneAndUpdate({username: username},{username: newUsername, email: email, password: hashedPassword, picture: picture})
             return{
                 ...result._doc,
