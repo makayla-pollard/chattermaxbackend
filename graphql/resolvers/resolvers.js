@@ -102,9 +102,7 @@ module.exports = {
             const gottenuser = await User.findOne({username: username});
             const userTwo = await User.findOne({username: newUsername})
             
-            if(userTwo != gottenuser && userTwo.username != "undefined"){
-                throw new Error("Username already exists")
-            }
+
             
             if( /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false){
                 throw new Error("Email not valid");
