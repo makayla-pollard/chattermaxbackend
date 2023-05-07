@@ -99,8 +99,7 @@ module.exports = {
     },
     editUser: async ({username, newUsername, email, oldPassword, password, passConf, picture}) => {
         try{
-            const gottenuser = await User.findOne({username: username});
-            const userTwo = await User.findOne({username: newUsername})
+
             
 
             
@@ -132,15 +131,4 @@ module.exports = {
             throw err;
         }
     }
-    /* 
-    addChat: async (args, req) => {
-        if(!req.isAuth){
-            throw new Error('Unauthenticated!)
-        }
-        //other data
-    }
-    
-    
-    
-    */
 }
