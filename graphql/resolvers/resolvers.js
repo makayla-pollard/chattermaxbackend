@@ -102,7 +102,7 @@ module.exports = {
             const gottenuser = await User.findOne({username: username});
             const userTwo = await User.findOne({username: newUsername})
             
-            if(userTwo != gottenuser && userTwo != null){
+            if(userTwo != gottenuser && userTwo.username != "undefined"){
                 throw new Error("Username already exists")
             }
             
