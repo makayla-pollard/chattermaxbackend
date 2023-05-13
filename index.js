@@ -37,7 +37,7 @@ app.get("/", function(req,res){
     res.send('Chattermax API')
 });
 
-app.get("/createUser", async function(req, res){
+app.post("/createUser", async function(req, res){
 
     const options = {
         'method' : 'POST',
@@ -53,9 +53,9 @@ app.get("/createUser", async function(req, res){
 
     try{
         const result = await axios(options);
-        console.log(result)
+        res.json(result)
     }catch(e){
-        console.log(e)
+        res.json(e)
     }
 
 })
