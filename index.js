@@ -8,9 +8,11 @@ const schema = require('./graphql/schema/schema');
 const resolvers = require('./graphql/resolvers/resolvers')
 const isAuth = require('./middleware/auth')
 const app = express();
+const axios = require('axios');
 
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.json())
 
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', "*");
@@ -34,6 +36,29 @@ app.get("/", function(req,res){
     
     res.send('Chattermax API')
 });
+
+app.get("/createUser", async function(req, res){
+
+    const options = {
+        'method' : 'POST',
+        'url': 'https://api.chatengine.io/users',
+        'headers' : {
+            'Private-Key': `${process.env.PRIVATE_KEY}`
+        },
+        data: {
+            username: `${req.body.username}`,
+            secret: `${req.body.secret}`
+        }
+    }
+
+    try{
+        const result = await axios(options);
+        console.log(result)
+    }catch(e){
+        console.log(e)
+    }
+
+})
 
 mongoose.connect(
     `mongodb+srv://${process.env.MONGO_USER}:${
