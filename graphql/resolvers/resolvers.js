@@ -47,7 +47,9 @@ module.exports = {
                 username: args.userInput.username,
                 email: args.userInput.email,
                 password: hashedPassword,
-                picture: "https://i.pinimg.com/222x/57/70/f0/5770f01a32c3c53e90ecda61483ccb08.jpg"
+                picture: "http://ec2-18-116-21-237.us-east-2.compute.amazonaws.com:4000/images/default.png",
+                followers: [],
+                following: []
             });
             const result = await finalUser.save();
             
@@ -128,6 +130,22 @@ module.exports = {
                 _id: result.id
             }
         }catch(err){
+            throw err;
+        }
+    },
+    addFollowing: async function({username, listHolder}){
+        try{
+            const result = await User.updateOne({username: listHolder}, {$push: {following: username}})
+            return result.modifiedCount
+        }catch(e){
+            throw err;
+        }
+    },
+    addFollower: async function({username, listHolder}){
+        try{
+            const result = await User.updateOne({username: listHolder}, {$push: {followers: username}})
+            return result.modifiedCount
+        }catch(e){
             throw err;
         }
     }

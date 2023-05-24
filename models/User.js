@@ -16,9 +16,18 @@ const userSchema = new Schema({
         required: true
     },
     picture: {
-        type: String,
-        required: false
-    }
+        type: String
+    },
+    followers: [
+        {
+            type: String
+        }
+    ],
+    following: [
+        {
+            type: String
+        }
+    ]
 });
 
 module.exports = mongoose.model('User', userSchema );

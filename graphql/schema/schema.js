@@ -34,6 +34,8 @@ type RootMutation{
     createUser(userInput: UserInput): User
     editUser(username: String!, newUsername: String!, email: String!, oldPassword: String!, password: String!,passConf: String!, picture: String!): User
     deleteUser(username: String!): Boolean
+    addFollower(username: String!, listHolder: String!): Int
+    addFollowing(username: String!, listHolder: String!): Int
 }
 
 schema{
