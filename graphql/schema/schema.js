@@ -7,6 +7,8 @@ type User {
     email: String!
     password: String
     picture: String
+    followers: [String]
+    following: [String]
 }
 
 type LoginData{
