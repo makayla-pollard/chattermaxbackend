@@ -159,7 +159,7 @@ module.exports = {
     },
     deleteFollowing: async function({username, listHolder}){
         try{
-            const result = await User.updateOne({username: listHolder}, {$pull: {followers: username}})
+            const result = await User.updateOne({username: listHolder}, {$pull: {following: username}})
             return result.modifiedCount
         }catch(e){
             throw err;
