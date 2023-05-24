@@ -38,6 +38,8 @@ type RootMutation{
     deleteUser(username: String!): Boolean
     addFollower(username: String!, listHolder: String!): Int
     addFollowing(username: String!, listHolder: String!): Int
+    deleteFollower(username: String!, listHolder: String!): Int
+    deleteFollowing(username: String!, listHolder: String!): Int
 }
 
 schema{
