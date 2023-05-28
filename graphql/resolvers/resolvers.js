@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../../models/User');
+const Comment = require('../../models/Comment')
 require('dotenv').config();
 
 
@@ -11,10 +12,24 @@ module.exports = {
             return users.map(user => {
                 return {
                     ...user._doc, 
-                    _id: user.id};
+                    _id: user.id
+                };
             })
         }catch(err){
             throw err
+        }
+    },
+    commentsByCommentee: async ({commentee}) => {
+        try{
+            const comments = await Comment.find({commentee: commentee})
+            return comments.map(comment => {
+                return {
+                    ...comment._doc,
+                    _id: comment.id
+                }
+            })
+        }catch(err){
+            throw err;
         }
     },
     createUser: async args => {
@@ -60,6 +75,20 @@ module.exports = {
     
     
     },
+    createComment: async args => {
+        try{
+            const comment = new Comment({
+                commenter: args.commentInput.commenter,
+                commentee: args.commentInput.commentee,
+                comment: args.commentInput.comment
+            })
+            const result = await comment.save();
+
+            return {...result._doc, _id: result.id}
+        }catch(err){
+            throw err;
+        }
+    },
     login: async ({username, password}) => {
         const gottenUser = await User.findOne({username: username});
         if(!gottenUser){
@@ -99,32 +128,66 @@ module.exports = {
             throw err;
         }
     },
-    editUser: async ({username, newUsername, email, oldPassword, password, passConf, picture}) => {
+    deleteComment: async ({id}) => {
+        try{
+            let bool = false
+            const deleted = await Comment.deleteOne({_id: id});
+            if(deleted.deletedCount == "1"){
+                bool= true;
+            }
+            return bool;
+        }catch(err){
+            throw err;
+        }
+    },
+    editUser: async ({username, newUsername, email}) => {
         try{
 
-            
+            const userTwo = await User.findOne({username: newUsername})
+                if(userTwo && userTwo.username != username){
+                    throw new Error("Username Already In Use")
+                }
 
-            
+
+
             if( /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email) == false){
                 throw new Error("Email not valid");
             }
 
-            if(args.userInput.password == null || args.userInput.password == "" || args.userInput.username == null || args.userInput.username == ''){
+            
+            const result = await User.findOneAndUpdate({username: username},{username: newUsername, email: email})
+            return{
+                ...result._doc,
+                _id: result.id
+            }
+        }catch(err){
+            throw err;
+        }
+    },
+    editUserPhoto: async ({username, picture}) => {
+        try{
+            const result = await User.findOneAndUpdate({username: username}, {picture: picture})
+            return{
+                ...result._doc,
+                _id: result.id
+            }
+        }catch(err){
+            throw err;
+        }
+    },
+    editUserPassword: async ({username, password, passConf}) => {
+        try{
+            if(password != passConf){
+                throw new Error("Passwords do not match")
+            }
+
+            if(password == null || password == "" ){
                 throw new Error("Invalid Input")
             }
 
-            if(passConf != password){
-                throw new Error("Passwords Do Not Match")
-            }
-            const isPassword = await bcrypt.compare(password, oldPassword);
-            const hashedPassword = "";
-            if(isPassword){
-                hashedPassword = oldPassword
-            }else if(!isPassword){
-                hashedPassword = await bcrypt.hash(password, 12)
-            }
-            
-            const result = await User.findOneAndUpdate({username: username},{username: newUsername, email: email, password: hashedPassword, picture: picture})
+            const hashedPassword = await bcrypt.hash(password, 12)
+
+            const result = await User.findOneAndUpdate({username: username}, {password: hashedPassword});
             return{
                 ...result._doc,
                 _id: result.id
